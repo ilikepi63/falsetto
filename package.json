@@ -1,0 +1,28 @@
+{
+  "name": "falsetto",
+  "version": "0.0.1",
+  "description": "Lightweight ODM for Apache Cassandra",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^26.0.22",
+    "@types/mocha": "^8.2.2",
+    "@typescript-eslint/eslint-plugin": "^4.20.0",
+    "@typescript-eslint/parser": "^4.20.0",
+    "eslint": "^7.23.0",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.5.4",
+    "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "@types/node": "^14.14.37",
+    "cassandra-driver": "^4.6.2"
+  }
+}

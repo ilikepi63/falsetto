@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.insertIntoBatchFromQueries = exports.createTableBatchFromQueries = exports.makeBatchFromStatements = void 0;
+var create_table_1 = require("./create-table");
+var insert_into_1 = require("./insert-into");
+var BEGIN_BATCH = "BEGIN BATCH";
+var APPLY_BATCH = "APPLY_BATCH";
+var makeBatchFromStatements = function (statements) { return BEGIN_BATCH + " \n " + statements.join("\n") + " \n " + APPLY_BATCH; };
+exports.makeBatchFromStatements = makeBatchFromStatements;
+var createTableBatchFromQueries = function (queries) { return exports.makeBatchFromStatements(queries.map(create_table_1.createTable)); };
+exports.createTableBatchFromQueries = createTableBatchFromQueries;
+var insertIntoBatchFromQueries = function (queries) { return exports.makeBatchFromStatements(queries.map(insert_into_1.createInsertStatement)); };
+exports.insertIntoBatchFromQueries = insertIntoBatchFromQueries;
