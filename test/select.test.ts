@@ -1,5 +1,5 @@
 import { Schema, Table, TextAttribute, UuidAttribute } from "../src";
-import { generateSelectQuery, generateAttributes, stringFromAttributes } from "../src/cql-generators/select";
+import { generateSelectQuery, generateAttributes, stringFromAttributes, whereStatement } from "../src/cql-generators/select";
 
 
 describe("Select Table Generator", () => {
@@ -16,7 +16,7 @@ describe("Select Table Generator", () => {
         email: email
     });
 
-    const queryByEmail = Table.from(personSchema);
+    const queryByEmail = Table.from(personSchema).by(email);
 
     it("should just merge the entries", () => {
         expect(generateAttributes(["id", "name"])).toBe("id, name");
@@ -32,15 +32,46 @@ describe("Select Table Generator", () => {
 
 
     it("Should generate a standard SELECT Table", () => {
-
-        // generateSelectQuery({});
-
+        expect(generateSelectQuery({ table: queryByEmail })).toBe("SELECT * FROM person_by_email;");
     });
 
-    it("Should throw an error if there is no table specified", () => {
+    it("Should create a standard select statement with variables.", () => {
+        expect(generateSelectQuery({ table: queryByEmail, attributes: ["id", "first_name"] })).toBe("SELECT id, first_name FROM person_by_email;");
+    });
 
-        // expect(() => { generateSelectQuery({ table:  }); }).toThrow();
+    it("Should create a standard select statement with variables and a where clause.", () => {
+        expect(generateSelectQuery({
+            table: queryByEmail, attributes: ["id", "first_name"], constraints: [
+                { subject: "id", value: "123" }
+            ]
+        })).toBe("SELECT id, first_name FROM person_by_email WHERE id = 123;");
+    });
 
+
+    it("Should create a multi-constraint where clause.", () => {
+        expect(generateSelectQuery({
+            table: queryByEmail, attributes: ["id", "first_name"], constraints: [
+                { subject: "id", value: "123" },
+                { subject: "first_name", operator: "=", value: "test" }
+            ]
+        })).toBe("SELECT id, first_name FROM person_by_email WHERE id = 123 AND first_name = test;");
+    });
+
+    it("Should create a multi-constraint where clause.", () => {
+        expect(generateSelectQuery({
+            table: queryByEmail, attributes: ["id", "first_name"], constraints: [
+                { subject: "id", value: "123" },
+                { subject: "first_name", operator: "=", value: "test" },
+                { subject: "age", operator: ">", value: "18" }
+            ]
+        })).toBe("SELECT id, first_name FROM person_by_email WHERE id = 123 AND first_name = test AND age > 18;");
+    });
+
+    it("Should create a standard where clause.", () => {
+        expect(whereStatement(
+            [
+                { subject: "id", value: "123" }
+            ])).toBe(" WHERE id = 123");
     });
 
 });

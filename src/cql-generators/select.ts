@@ -9,8 +9,8 @@ export const AND = "AND";
 
 interface Constraint {
     subject: string;
-    operator: string;
-    value?: string;
+    operator?: string;
+    value: string;
 }
 
 interface IQuery {
@@ -31,11 +31,6 @@ export const stringFromAttributes = (arr: Array<string> | void): string => {
     return generateAttributes(arr);
 };
 
-export const whereClause = (attribs: Array<string>) => {
-    if (attribs.length < 1) return "";
-
-    return `${WHERE} `;
-};
 
 export const getResultantConstraint = (constraint: Constraint) => {
     if (isString(constraint.subject) && isString(constraint.operator) && isString(constraint.value)) {
@@ -49,14 +44,14 @@ export const getResultantConstraint = (constraint: Constraint) => {
     throw new TypeError(`Malformed Input when constructing a Constraint object. Given: ${constraint}.`);
 };
 
-export const constraintToString = (constraint: Constraint) => `${constraint} ${getResultantConstraint(constraint)}`;
+export const whereStatement = (constraints?: Array<Constraint>) => {
 
-export const whereStatement = (constraints: Array<Constraint>) => {
+    if (!constraints) return "";
 
     if (constraints.length < 1) return "";
 
-    return `${WHERE} ${constraints.map(constraintToString).join(AND)}`;
+    return ` ${WHERE} ${constraints.map(getResultantConstraint).join(` ${AND} `)}`;
 
 };
 
-export const generateSelectQuery = ({ table, attributes, constraints }: IQuery): string => `${SELECT} ${stringFromAttributes(attributes)} ${FROM} ${createNameFromQuery(table)} ${WHERE}`;
+export const generateSelectQuery = ({ table, attributes, constraints }: IQuery): string => `${SELECT} ${stringFromAttributes(attributes)} ${FROM} ${createNameFromQuery(table)}${whereStatement(constraints)};`;
