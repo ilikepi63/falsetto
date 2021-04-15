@@ -9,7 +9,7 @@
     "build": "tsc"
   },
   "keywords": [],
-  "author": "",
+  "author": "Cameron Harris (cameronh63@gmail.com)",
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^26.0.22",
