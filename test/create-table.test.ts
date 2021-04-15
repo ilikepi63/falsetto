@@ -66,7 +66,6 @@ describe("Testing Create Table", () => {
     });
 
     it("Should create a table definition correctly", () => {
-        console.log(queryByfirstNameLastName.partitionKey);
         expect(createTable(queryByfirstNameLastName)).toBe("CREATE TABLE person_by_first_name_last_name (\nid uuid,\nfirst_name text,\nlast_name text,\nemail text,\nPRIMARY KEY ((first_name, last_name), email)\n) WITH CLUSTERING ORDER BY (email asc);");
     });
 

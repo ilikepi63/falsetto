@@ -9,7 +9,6 @@ export default class BatchExecutable implements Executable {
         this.queries = queries;
     }
 
-
     execute(client: Client): Promise<types.ResultSet> {
         return client.batch(this.queries, { prepare: true });
     }

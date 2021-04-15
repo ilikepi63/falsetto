@@ -3,6 +3,7 @@ import { Attribute } from "./attributes";
 import ClusteringColumn from "./clustering-column";
 import { createTable } from "./cql-generators/create-table";
 import { isAttribute } from "./attributes/base-attribute";
+import Query from "./query";
 
 export default class Table {
 
