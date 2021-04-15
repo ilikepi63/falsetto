@@ -3,20 +3,30 @@ import { Client, types } from "cassandra-driver";
 import { generateSelectQuery, IConstraint } from "./cql-generators/select";
 import { Schema, Table } from ".";
 
+interface IQueryConstructor {
+    table?: Table,
+    schema?: Schema,
+    attributes?: Array<string>
+}
+
 export default class Query implements Executable {
 
     constraints: Array<IConstraint>;
-    attributes: Array<string>;
+    attributes?: Array<string>;
     table?: Table;
 
-    constructor(table?: Table, schema?: Schema) {
+    constructor({ table, schema, attributes }: IQueryConstructor) {
         if (!table && !schema) throw new TypeError("You cannot create a query without a table or schema. Please specify atleast one.");
         this.table = table;
         this.constraints = [];
-        this.attributes = [];
+        this.attributes = attributes;
     }
 
     where(attribute: string): Where {
+        return new Where(this, attribute);
+    };
+
+    and(attribute: string): Where {
         return new Where(this, attribute);
     };
 

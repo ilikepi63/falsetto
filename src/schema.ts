@@ -1,16 +1,26 @@
-import { Attribute, UuidAttribute } from "./attributes";
+import { Attribute } from "./attributes";
 import Table from "./table";
 import SingleExecutable from "./executables/single-executable";
 import { createTable } from "./cql-generators/create-table";
 import MultiExecutable from "./executables/multi-executable";
-import { createTableBatchFromQueries } from "./cql-generators/batch";
 import { createInsertStatement } from "./cql-generators/insert-into";
 import BatchExecutable from "./executables/batch-executable";
 import Executable from "./executables/executable";
+import Query from "./query";
+
+/** Function to retrieve the first-most query that 
+ * can support the schema. 
+ * 
+ * @param keys - keys the query uses.
+ * @param schema - the schema given
+ */
+export const getTableFromSchema = (keys: Array<string>, schema: Schema) => {
+
+};
 
 export default class Schema {
 
-    private queries: Array<Table> = [];
+    tables: Array<Table> = [];
 
     attributes: Record<string, Attribute>;
     name: string;
@@ -21,27 +31,22 @@ export default class Schema {
     }
 
     addTable(query: Table): Schema {
-        this.queries.push(query);
+        this.tables.push(query);
         return this;
     }
 
     createTables(): MultiExecutable {
 
         //TODO: I am sure this is not the way I want to do this.
-        const executables: Array<SingleExecutable> = this.queries
+        const executables: Array<SingleExecutable> = this.tables
             .map(createTable)
             .map(statement => new SingleExecutable(statement, []));
 
         return new MultiExecutable(executables);
     }
 
-    get(data: Record<string, any>): Executable {
-
-        const query: string = "";
-
-        const args: Array<string> = [];
-
-        return new SingleExecutable(query, args);
+    get(attributes?: Array<string>): Query {
+        return new Query({ schema: this, attributes });
     }
 
     put(data: Record<string, any>): Executable {
@@ -59,15 +64,15 @@ export default class Schema {
 
         };
 
-        if (this.queries.length === 0) throw new TypeError("Unable to put Schema without any queries.");
+        if (this.tables.length === 0) throw new TypeError("Unable to put Schema without any queries.");
 
-        if (this.queries.length === 1) {
-            return new SingleExecutable(createInsertStatement(this.queries[0]), createArgsFromData(data));
+        if (this.tables.length === 1) {
+            return new SingleExecutable(createInsertStatement(this.tables[0]), createArgsFromData(data));
         }
 
-        return new BatchExecutable(this.queries.map(query => {
+        return new BatchExecutable(this.tables.map(table => {
             return {
-                query: createInsertStatement(query),
+                query: createInsertStatement(table),
                 params: createArgsFromData(data)
             };
         }));

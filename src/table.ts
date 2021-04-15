@@ -59,8 +59,9 @@ export default class Table {
         return createTable(this);
     }
 
-    query(values: Array<string> | void): Query {
-        return new Query();
+
+    get(attributes?: Array<string>): Query {
+        return new Query({ table: this, attributes });
     }
 }
 
