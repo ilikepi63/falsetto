@@ -19,7 +19,7 @@ export const getTableFromSchema = (exactKeys: Array<string>, rangeKeys: Array<st
     // if there are no range keys, then we just return the first viable table
     if (rangeKeys.length < 1) return viableTables[0];
 
-    getBestFitTable(viableTables, rangeKeys);
+    return getBestFitTable(viableTables, rangeKeys);
 
 };
 
@@ -31,7 +31,7 @@ export const getTableFromSchema = (exactKeys: Array<string>, rangeKeys: Array<st
 export const partitionDoesMatch = (keys: Array<string>) => (table: Table): boolean => table.partitionKey.map(attr => attr.name).every(key => keys.includes(key));
 
 
-const getPoint = (keys: Array<string>) => (col: ClusteringColumn): number => keys.includes(col.name) ? 1 : 0;
+export const getPoint = (keys: Array<string>) => (col: ClusteringColumn): number => keys.includes(col.name) ? 1 : 0;
 
 export const getBestFitTable = (tables: Array<Table>, rangeKeys: Array<string>): Table => {
 
@@ -41,7 +41,7 @@ export const getBestFitTable = (tables: Array<Table>, rangeKeys: Array<string>):
 
     for (let i = 0; i < tables.length; i++) {
 
-        const clusteringColumns: Array<ClusteringColumn> = tables.flatMap(table => table.clusteringColumns);
+        const clusteringColumns: Array<ClusteringColumn> = tables[i].clusteringColumns;
 
         const score: number = clusteringColumns.map(getPoint(rangeKeys)).reduce((sum, arr) => sum + arr, 0);
 

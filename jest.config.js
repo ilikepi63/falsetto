@@ -1,5 +1,10 @@
 /* eslint-disable no-undef */
 module.exports = {
+    "collectCoverageFrom": [
+        "src/**",
+        "!**/node_modules/**",
+        "!**/vendor/**"
+    ],
     "roots": [
         "<rootDir>/test"
     ],
