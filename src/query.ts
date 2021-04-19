@@ -2,6 +2,7 @@ import Executable from "./executables/executable";
 import { Client, types } from "cassandra-driver";
 import { generateSelectQuery, IConstraint } from "./cql-generators/select";
 import { Schema, Table } from ".";
+import { getTableFromSchema } from "./schema-utils";
 
 interface IQueryConstructor {
     table?: Table,
@@ -14,10 +15,12 @@ export default class Query implements Executable {
     constraints: Array<IConstraint>;
     attributes?: Array<string>;
     table?: Table;
+    schema?: Schema;
 
     constructor({ table, schema, attributes }: IQueryConstructor) {
         if (!table && !schema) throw new TypeError("You cannot create a query without a table or schema. Please specify atleast one.");
         this.table = table;
+        this.schema = schema;
         this.constraints = [];
         this.attributes = attributes;
     }
@@ -38,7 +41,7 @@ export default class Query implements Executable {
         // if we do not have table specified, that means that we have a schema specified
         // therefore we will use an algorithm to get 
         if (!this.table) {
-
+            return getTableFromSchema(getEqualConstraints(this.constraints).map((constraint) => constraint.subject), this.constraints.map(constraint => constraint.subject), this.schema as Schema);
         }
 
         return this.table as Table;
@@ -53,13 +56,15 @@ export default class Query implements Executable {
     }
 }
 
+export const getEqualConstraints = (constraints: Array<IConstraint>): Array<IConstraint> => constraints.filter(constraint => constraint.operator === Where.EQUALS);
+
 export class Where {
 
-    EQUALS: string = "=";
-    IS_GREATER_THAN: string = ">";
-    IS_GREATER_THAN_OR_EQUAL_TO: string = ">=";
-    IS_LESSER_THAN: string = "<";
-    IS_LESSER_THAN_OR_EQUAL_TO: string = "<=";
+    static EQUALS: string = "=";
+    static IS_GREATER_THAN: string = ">";
+    static IS_GREATER_THAN_OR_EQUAL_TO: string = ">=";
+    static IS_LESSER_THAN: string = "<";
+    static IS_LESSER_THAN_OR_EQUAL_TO: string = "<=";
 
     query: Query;
     attribute: string;
@@ -70,27 +75,27 @@ export class Where {
     }
 
     equals(value: unknown): Query {
-        this.query.addConstraint({ subject: this.attribute, operator: this.EQUALS, value: value });
+        this.query.addConstraint({ subject: this.attribute, operator: Where.EQUALS, value: value });
         return this.query;
     }
 
     isGreaterThan(value: unknown): Query {
-        this.query.addConstraint({ subject: this.attribute, operator: this.IS_GREATER_THAN, value: value });
+        this.query.addConstraint({ subject: this.attribute, operator: Where.IS_GREATER_THAN, value: value });
         return this.query;
     }
 
     isGreaterThanOrEqualTo(value: unknown) {
-        this.query.addConstraint({ subject: this.attribute, operator: this.IS_GREATER_THAN_OR_EQUAL_TO, value: value });
+        this.query.addConstraint({ subject: this.attribute, operator: Where.IS_GREATER_THAN_OR_EQUAL_TO, value: value });
         return this.query;
     }
 
     isLesserThan(value: unknown) {
-        this.query.addConstraint({ subject: this.attribute, operator: this.IS_LESSER_THAN, value: value });
+        this.query.addConstraint({ subject: this.attribute, operator: Where.IS_LESSER_THAN, value: value });
         return this.query;
     }
 
     isLesserThanOrEqualTo(value: unknown) {
-        this.query.addConstraint({ subject: this.attribute, operator: this.IS_LESSER_THAN_OR_EQUAL_TO, value: value });
+        this.query.addConstraint({ subject: this.attribute, operator: Where.IS_LESSER_THAN_OR_EQUAL_TO, value: value });
         return this.query;
     }
 

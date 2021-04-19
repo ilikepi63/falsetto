@@ -19,6 +19,8 @@ export interface IQuery {
     constraints?: Array<IConstraint>
 };
 
+
+
 export const generateAttributes = (arr: Array<string>): string => arr.join(", ");
 
 export const stringFromAttributes = (arr: Array<string> | void): string => {
