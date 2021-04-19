@@ -19,7 +19,10 @@ export interface IQuery {
     constraints?: Array<IConstraint>
 };
 
-
+export interface ISelectStatement {
+    params: Array<any>,
+    query: string
+}
 
 export const generateAttributes = (arr: Array<string>): string => arr.join(", ");
 
@@ -34,26 +37,55 @@ export const stringFromAttributes = (arr: Array<string> | void): string => {
 };
 
 
-export const getResultantIConstraint = (constraint: IConstraint) => {
+export const getResultantConstraint = (constraint: IConstraint) => {
     if (isString(constraint.subject) && isString(constraint.operator) && isString(constraint.value)) {
-        return `${constraint.subject} ${constraint.operator} ${constraint.value}`;
+        return `${constraint.subject} ${constraint.operator} ?`;
     }
 
     if (isString(constraint.subject) && isString(constraint.value)) {
-        return `${constraint.subject} = ${constraint.value}`;
+        return `${constraint.subject} = ?`;
     }
 
     throw new TypeError(`Malformed Input when constructing a IConstraint object. Given: ${constraint}.`);
 };
 
-export const whereStatement = (constraints?: Array<IConstraint>) => {
+export const getWhereFromConstraints = (constraints: Array<IConstraint>): ISelectStatement => {
+    let query = " ";
+    let params = [];
 
-    if (!constraints) return "";
+    for (let i = 0; i < constraints.length; i++) {
+        params.push(constraints[i].value);
+        if (i === 0) {
+            query = query + `${WHERE} ${getResultantConstraint(constraints[i])}`;
+        } else {
+            query = query + ` ${AND} ${getResultantConstraint(constraints[i])}`;
+        }
 
-    if (constraints.length < 1) return "";
+    }
 
-    return ` ${WHERE} ${constraints.map(getResultantIConstraint).join(` ${AND} `)}`;
+    return {
+        query,
+        params
+    };
+};
+
+export const whereStatement = (constraints?: Array<IConstraint>): ISelectStatement => {
+
+    if (!constraints) return { query: "", params: [] };
+
+    if (constraints.length < 1) return { query: "", params: [] };
+
+    return getWhereFromConstraints(constraints);
 
 };
 
-export const generateSelectQuery = ({ table, attributes, constraints }: IQuery): string => `${SELECT} ${stringFromAttributes(attributes)} ${FROM} ${createNameFromQuery(table)}${whereStatement(constraints)};`;
+export const generateSelectQuery = ({ table, attributes, constraints }: IQuery): ISelectStatement => {
+
+    const { params, query } = whereStatement(constraints);
+
+    return {
+        params,
+        query: `${SELECT} ${stringFromAttributes(attributes)} ${FROM} ${createNameFromQuery(table)}${query};`
+    };
+
+};

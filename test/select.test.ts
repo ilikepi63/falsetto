@@ -32,46 +32,66 @@ describe("Select Table Generator", () => {
 
 
     it("Should generate a standard SELECT Table", () => {
-        expect(generateSelectQuery({ table: queryByEmail })).toBe("SELECT * FROM person_by_email;");
+        const { query, params } = generateSelectQuery({ table: queryByEmail });
+
+        expect(query).toBe("SELECT * FROM person_by_email;");
+        expect(params).toStrictEqual([]);
     });
 
     it("Should create a standard select statement with variables.", () => {
-        expect(generateSelectQuery({ table: queryByEmail, attributes: ["id", "first_name"] })).toBe("SELECT id, first_name FROM person_by_email;");
+        const { query, params } = generateSelectQuery({ table: queryByEmail, attributes: ["id", "first_name"] });
+
+        expect(query).toBe("SELECT id, first_name FROM person_by_email;");
+        expect(params).toStrictEqual([]);
     });
 
     it("Should create a standard select statement with variables and a where clause.", () => {
-        expect(generateSelectQuery({
+
+        const { query, params } = generateSelectQuery({
             table: queryByEmail, attributes: ["id", "first_name"], constraints: [
                 { subject: "id", value: "123" }
             ]
-        })).toBe("SELECT id, first_name FROM person_by_email WHERE id = 123;");
+        });
+
+        expect(query).toBe("SELECT id, first_name FROM person_by_email WHERE id = ?;");
+        expect(params).toStrictEqual(["123"]);
     });
 
 
     it("Should create a multi-constraint where clause.", () => {
-        expect(generateSelectQuery({
+
+        const { query, params } = generateSelectQuery({
             table: queryByEmail, attributes: ["id", "first_name"], constraints: [
                 { subject: "id", value: "123" },
                 { subject: "first_name", operator: "=", value: "test" }
             ]
-        })).toBe("SELECT id, first_name FROM person_by_email WHERE id = 123 AND first_name = test;");
+        });
+
+        expect(query).toBe("SELECT id, first_name FROM person_by_email WHERE id = ? AND first_name = ?;");
+        expect(params).toStrictEqual(["123", "test"]);
     });
 
     it("Should create a multi-constraint where clause.", () => {
-        expect(generateSelectQuery({
+
+        const { query, params } = generateSelectQuery({
             table: queryByEmail, attributes: ["id", "first_name"], constraints: [
                 { subject: "id", value: "123" },
                 { subject: "first_name", operator: "=", value: "test" },
                 { subject: "age", operator: ">", value: "18" }
             ]
-        })).toBe("SELECT id, first_name FROM person_by_email WHERE id = 123 AND first_name = test AND age > 18;");
+        });
+
+        expect(query).toBe("SELECT id, first_name FROM person_by_email WHERE id = ? AND first_name = ? AND age > ?;");
+        expect(params).toStrictEqual(["123", "test", "18"]);
     });
 
     it("Should create a standard where clause.", () => {
-        expect(whereStatement(
-            [
-                { subject: "id", value: "123" }
-            ])).toBe(" WHERE id = 123");
+
+        const { query, params } = whereStatement([{ subject: "id", value: "123" }
+        ]);
+
+        expect(query).toBe(" WHERE id = ?");
+        expect(params).toStrictEqual(["123"]);
     });
 
 });

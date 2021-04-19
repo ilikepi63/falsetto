@@ -30,84 +30,100 @@ describe("Query Test Suite", () => {
 
     it("Should find the correct query to execute - integration", async () => {
 
-        const query = personSchema
+        const get = personSchema
             .get(["name", "id"])
             .where("id")
             .equals("123")
             .and("email")
             .equals("test@test.com");
 
-        expect(query.getQuery()).toBe("SELECT name, id FROM person_by_id WHERE id = 123 AND email = test@test.com;");
+        const { query, params } = get.getQuery();
+
+        expect(query).toBe("SELECT name, id FROM person_by_id WHERE id = ? AND email = ?;");
+        expect(params).toStrictEqual(["123", "test@test.com"]);
 
     });
 
     it("Should find the correct query to execute - integration", async () => {
 
-        const query = personSchema
+        const get = personSchema
             .get(["name", "id"])
             .where("email")
             .equals("test@test.com");
 
-        expect(query.getQuery()).toBe("SELECT name, id FROM person_by_email WHERE email = test@test.com;");
+        const { query, params } = get.getQuery();
 
+        expect(query).toBe("SELECT name, id FROM person_by_email WHERE email = ?;");
+        expect(params).toStrictEqual(["test@test.com"]);
     });
 
     it("Should find the correct query to execute - integration", async () => {
 
-        const query = personSchema
+        const get = personSchema
             .get(["name", "id"])
             .where("first_name")
             .equals("test")
             .and("last_name")
             .equals("test");
 
-        expect(query.getQuery()).toBe("SELECT name, id FROM person_by_first_name_last_name WHERE first_name = test AND last_name = test;");
+        const { query, params } = get.getQuery();
 
+        expect(query).toBe("SELECT name, id FROM person_by_first_name_last_name WHERE first_name = ? AND last_name = ?;");
+        expect(params).toStrictEqual(["test", "test"]);
     });
 
     it("Should create a query with the correct clustering columns", async () => {
 
-        const query = personSchema
+        const get = personSchema
             .get()
             .where("id")
             .equals("123")
             .and("email")
             .equals("test@test.com");
 
-        expect(query.getQuery()).toBe("SELECT * FROM person_by_id WHERE id = 123 AND email = test@test.com;");
+        const { query, params } = get.getQuery();
+
+        expect(query).toBe("SELECT * FROM person_by_id WHERE id = ? AND email = ?;");
+        expect(params).toStrictEqual(["123", "test@test.com"]);
 
     });
 
 
     it("Should create a query with the correct clustering columns", async () => {
 
-        const query = queryById
+        const get = queryById
             .get()
             .where("id")
             .equals("123")
             .and("email")
             .equals("test@test.com");
 
-        expect(query.getQuery()).toBe("SELECT * FROM person_by_id WHERE id = 123 AND email = test@test.com;");
+        const { query, params } = get.getQuery();
+
+        expect(query).toBe("SELECT * FROM person_by_id WHERE id = ? AND email = ?;");
+        expect(params).toStrictEqual(["123", "test@test.com"]);
 
     });
 
     it("Should create a query with the correct clustering columns", async () => {
 
-        const query = queryByEmail
+        const get = queryByEmail
             .get()
             .where("email")
             .equals("test@test.com")
             .and("id")
             .equals("123");
 
-        expect(query.getQuery()).toBe("SELECT * FROM person_by_email WHERE email = test@test.com AND id = 123;");
+        const { query, params } = get.getQuery();
+
+        expect(query).toBe("SELECT * FROM person_by_email WHERE email = ? AND id = ?;");
+        expect(params).toStrictEqual(["test@test.com", "123"]);
 
     });
 
     it("Should create a query with the correct clustering columns", async () => {
 
-        const query = queryByfirstNameLastName
+        const get = queryByfirstNameLastName
             .get()
             .where("first_name")
             .equals("test")
@@ -116,7 +132,10 @@ describe("Query Test Suite", () => {
             .and("email")
             .isGreaterThan("test");
 
-        expect(query.getQuery()).toBe("SELECT * FROM person_by_first_name_last_name WHERE first_name = test AND last_name = test AND email > test;");
+        const { query, params } = get.getQuery();
+
+        expect(query).toBe("SELECT * FROM person_by_first_name_last_name WHERE first_name = ? AND last_name = ? AND email > ?;");
+        expect(params).toStrictEqual(["test", "test", "test"]);
 
     });
 

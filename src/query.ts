@@ -52,7 +52,10 @@ export default class Query implements Executable {
     }
 
     execute(client: Client): Promise<types.ResultSet> {
-        return client.execute(this.getQuery());
+
+        const { query, params } = this.getQuery();
+
+        return client.execute(query, params, { prepare: true });
     }
 }
 
