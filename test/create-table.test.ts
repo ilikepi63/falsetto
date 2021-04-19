@@ -1,7 +1,7 @@
-import { Schema, TextAttribute, UuidAttribute, attributesFromQuery, Table, parenthesis, typeFromAttributeEntry } from "../src";
+import { Schema, TextAttribute, UuidAttribute, Table } from "../src";
 import ClusteringColumn, { ClusteringDirection } from "../src/clustering-column";
-import { createClusteringKey, createPartitionKey, createPrimaryKey, createTable, createClusteringOrder, createClusteringColumn } from "../src/cql-generators/create-table";
-import { createNameFromQuery } from "../src/cql-generators/utils";
+import { createClusteringKey, createPartitionKey, createPrimaryKey, createTable, createClusteringOrder, createClusteringColumn, typeFromAttributeEntry, attributesFromQuery } from "../src/cql-generators/create-table";
+import { createNameFromQuery, parenthesis } from "../src/cql-generators/utils";
 
 describe("Testing Create Table", () => {
 
