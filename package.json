@@ -1,6 +1,6 @@
 {
   "name": "falsetto",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Lightweight ODM for Apache Cassandra",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -8,7 +8,9 @@
     "test": "jest",
     "build": "tsc"
   },
-  "keywords": [],
+  "keywords": [
+    "apache cassandra"
+  ],
   "author": "Cameron Harris (cameronh63@gmail.com)",
   "license": "ISC",
   "devDependencies": {
