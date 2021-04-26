@@ -1,6 +1,6 @@
 {
   "name": "falsetto",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Lightweight ODM for Apache Cassandra",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -13,6 +13,11 @@
   ],
   "author": "Cameron Harris (cameronh63@gmail.com)",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ilikepi63/falsetto.git"
+  },
+  "homepage": "https://github.com/ilikepi63/falsetto",
   "devDependencies": {
     "@types/jest": "^26.0.22",
     "@types/mocha": "^8.2.2",
