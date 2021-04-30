@@ -1,6 +1,6 @@
 # Falsetto - lightweight ODM for Apache Cassandra :rocket:
 
-[![Build Status](https://travis-ci.org/ilikepi63/falsetto.svg?branch=master)](https://travis-ci.org/ilikepi63/falsetto)[![Coverage Status](https://coveralls.io/repos/github/ilikepi63/falsetto/badge.svg?branch=master)](https://coveralls.io/github/ilikepi63/falsetto?branch=master)
+[![Build Status](https://travis-ci.org/ilikepi63/falsetto.svg?branch=master)](https://travis-ci.org/ilikepi63/falsetto) [![Coverage Status](https://coveralls.io/repos/github/ilikepi63/falsetto/badge.svg?branch=master)](https://coveralls.io/github/ilikepi63/falsetto?branch=master)
 
 Falsetto is a lightweight ODM layer on top of the cassandra-driver package, designed to make development with TS/JS as fast :rocket: as possible. Thank you for taking a look at the project, and if you feel this helped you in some way, please find out how you can contribute - we need all kinds of help :D 
 
