@@ -36,8 +36,8 @@ describe("Executable Test Suite", () => {
         executable.execute(client);
 
         expect(client.execute.mock.calls.length).toBe(1);
-        expect(client.execute.mock.calls[0][0]).toBe("");
-        expect(client.execute.mock.calls[0][1]).toBe([]);
+        expect(client.execute.mock.calls[0][0]).toStrictEqual("");
+        expect(client.execute.mock.calls[0][1]).toStrictEqual([]);
 
 
     });
