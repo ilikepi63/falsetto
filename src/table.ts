@@ -13,11 +13,6 @@ export default class Table {
 
     private constructor(schema: Schema) {
         this.schema = schema;
-
-        // check the environment variable when attaching this to a global function
-        if (process.env.GENERATE_TABLES) {
-            // add the query to the global query object
-        }
     }
 
     static from(schema: Schema): Table {

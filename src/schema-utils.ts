@@ -53,5 +53,4 @@ export const getBestFitTable = (tables: Array<Table>, rangeKeys: Array<string>):
     }
 
     return bestFit;
-
 };
