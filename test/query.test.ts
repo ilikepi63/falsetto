@@ -1,5 +1,10 @@
-import { Schema, Table, UuidAttribute, TextAttribute } from "../src";
+import { Client, } from "cassandra-driver";
+import { Schema, Table, UuidAttribute, TextAttribute, Query } from "../src";
 import ClusteringColumn, { ClusteringDirection } from "../src/clustering-column";
+// query: string, params ?: ArrayOrObject, options ?: QueryOptions
+class MockClient extends Client {
+    execute = jest.fn();
+}
 
 
 describe("Query Test Suite", () => {
@@ -41,6 +46,15 @@ describe("Query Test Suite", () => {
 
         expect(query).toBe("SELECT name, id FROM person_by_id WHERE id = ? AND email = ?;");
         expect(params).toStrictEqual(["123", "test@test.com"]);
+
+    });
+
+    it("should throw if we construct without a table or schema", async () => {
+
+
+        expect(() => {
+            const get = new Query({});
+        }).toThrow();
 
     });
 
@@ -136,6 +150,91 @@ describe("Query Test Suite", () => {
 
         expect(query).toBe("SELECT * FROM person_by_first_name_last_name WHERE first_name = ? AND last_name = ? AND email > ?;");
         expect(params).toStrictEqual(["test", "test", "test"]);
+    });
+
+
+    it("Should create a query with the correct clustering columns", async () => {
+
+        const get = queryByfirstNameLastName
+            .get()
+            .where("first_name")
+            .equals("test")
+            .where("last_name")
+            .equals("test")
+            .and("email")
+            .isGreaterThanOrEqualTo("test");
+
+        const { query, params } = get.getQuery();
+
+        expect(query).toBe("SELECT * FROM person_by_first_name_last_name WHERE first_name = ? AND last_name = ? AND email >= ?;");
+        expect(params).toStrictEqual(["test", "test", "test"]);
+
+    });
+
+    it("Should create a query with the correct clustering columns", async () => {
+
+        const get = queryByfirstNameLastName
+            .get()
+            .where("first_name")
+            .equals("test")
+            .where("last_name")
+            .equals("test")
+            .and("email")
+            .isLesserThanOrEqualTo("test");
+
+        const { query, params } = get.getQuery();
+
+        expect(query).toBe("SELECT * FROM person_by_first_name_last_name WHERE first_name = ? AND last_name = ? AND email <= ?;");
+        expect(params).toStrictEqual(["test", "test", "test"]);
+
+    });
+
+    it("Should create a query with the correct clustering columns", async () => {
+
+        const get = queryByfirstNameLastName
+            .get()
+            .where("first_name")
+            .equals("test")
+            .where("last_name")
+            .equals("test")
+            .and("email")
+            .isLesserThan("test");
+
+        const { query, params } = get.getQuery();
+
+        expect(query).toBe("SELECT * FROM person_by_first_name_last_name WHERE first_name = ? AND last_name = ? AND email < ?;");
+        expect(params).toStrictEqual(["test", "test", "test"]);
+
+    });
+
+
+
+
+    it("should execute on a mock client", () => {
+
+        // client.execute(query, params, { prepare: true });
+
+        const client = new MockClient({
+            contactPoints: ["test"],
+            keyspace: "",
+
+        });
+
+        const get = queryByfirstNameLastName
+            .get()
+            .where("first_name")
+            .equals("test")
+            .where("last_name")
+            .equals("test")
+            .and("email")
+            .isGreaterThan("test")
+            .execute(client);
+
+        expect(client.execute.mock.calls.length).toBe(1);
+        expect(client.execute.mock.calls[0][0]).toBe("SELECT * FROM person_by_first_name_last_name WHERE first_name = ? AND last_name = ? AND email > ?;");
+        expect(client.execute.mock.calls[0][1]).toStrictEqual(["test", "test", "test"]);
+        expect(client.execute.mock.calls[0][2]).toStrictEqual({ prepare: true });
+
 
     });
 

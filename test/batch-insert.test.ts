@@ -1,6 +1,7 @@
 import { Table, Schema, TextAttribute, UuidAttribute } from "../src";
 import ClusteringColumn, { ClusteringDirection } from "../src/clustering-column";
 import BatchExecutable from "../src/executables/batch-executable";
+import SingleExecutable from "../src/executables/single-executable";
 
 describe("Batch Insert Test Suite", () => {
 
@@ -49,6 +50,48 @@ describe("Batch Insert Test Suite", () => {
         expect(() => {
             personSchema.put(newPerson);
         }).toThrowError(new TypeError("Attribute id is empty. You can't insert null data."));
+
+    });
+
+
+    const personSchemaSingle = new Schema("person", {
+        id: personId,
+        firstName: firstName,
+        lastName: lastName,
+        email: email
+    });
+
+    Table.from(personSchemaSingle)
+        .by(email);
+
+    it("should create a batch insert", () => {
+
+        const newPerson = { id: "123", firstName: "Name", lastName: "Name", email: "email" };
+
+        const exec = personSchemaSingle.put(newPerson);
+
+        expect((exec as SingleExecutable).query).toStrictEqual(
+            "INSERT INTO person_by_email (id, first_name, last_name, email) VALUES (?, ?, ?, ?);",
+        );
+
+        expect((exec as SingleExecutable).args).toStrictEqual(["123", "Name", "Name", "email"]);
+    });
+
+    const personSchemaNone = new Schema("person", {
+        id: personId,
+        firstName: firstName,
+        lastName: lastName,
+        email: email
+    });
+
+    it("should throw an error", () => {
+
+        const newPerson = { id: "123", firstName: "Name", lastName: "Name", email: "email" };
+
+        expect(() => {
+            const exec = personSchemaNone.put(newPerson);
+        }).toThrow();
+
 
     });
 
