@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 interface ClusteringColumnConstructor {
-    direction: ClusteringDirection;
+    direction?: ClusteringDirection;
     name: string;
 }
 
