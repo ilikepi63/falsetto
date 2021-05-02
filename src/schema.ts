@@ -8,15 +8,6 @@ import BatchExecutable from "./executables/batch-executable";
 import Executable from "./executables/executable";
 import Query from "./query";
 
-/** Function to retrieve the first-most query that 
- * can support the schema. 
- * 
- * @param keys - keys the query uses.
- * @param schema - the schema given
- */
-export const getTableFromSchema = (keys: Array<string>, schema: Schema) => {
-
-};
 
 export default class Schema {
 

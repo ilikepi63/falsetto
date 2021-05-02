@@ -94,4 +94,23 @@ describe("Select Table Generator", () => {
         expect(params).toStrictEqual(["123"]);
     });
 
+    it("Should create a standard where clause.", () => {
+
+        const { query, params } = whereStatement([]);
+
+        expect(query).toBe("");
+        expect(params).toStrictEqual([]);
+    });
+
+    it("Should throw.", () => {
+
+
+        expect(() => {
+            const { query, params } = whereStatement([{ subject: "", value: null }]);
+        }).toThrow();
+
+
+    });
+
+
 });
