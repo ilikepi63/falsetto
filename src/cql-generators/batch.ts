@@ -9,4 +9,4 @@ export const makeBatchFromStatements = (statements: Array<string>): string => `$
 
 export const createTableBatchFromQueries = (queries: Array<Table>): string => makeBatchFromStatements(queries.map(createTable));
 
-export const insertIntoBatchFromQueries = (queries: Array<Table>): string => makeBatchFromStatements(queries.map(createInsertStatement));
+export const insertIntoBatchFromQueries = (queries: Array<Table>): string => makeBatchFromStatements(queries.map(query => createInsertStatement(query)));
