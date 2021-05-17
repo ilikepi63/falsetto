@@ -3,7 +3,7 @@ import Table from "./table";
 import SingleExecutable from "./executables/single-executable";
 import { createTable } from "./cql-generators/create-table";
 import MultiExecutable from "./executables/multi-executable";
-import { createInsertStatement } from "./cql-generators/insert-into";
+import { createInsertStatement, InsertStatementOptions } from "./cql-generators/insert-into";
 import BatchExecutable from "./executables/batch-executable";
 import Executable from "./executables/executable";
 import Query from "./query";
@@ -40,7 +40,7 @@ export default class Schema {
         return new Query({ schema: this, attributes });
     }
 
-    put(data: Record<string, any>): Executable {
+    put(data: Record<string, any>, opts: InsertStatementOptions = {}): Executable {
 
         const createArgsFromData = (data: Record<string, any>) => {
 
@@ -63,7 +63,7 @@ export default class Schema {
 
         return new BatchExecutable(this.tables.map(table => {
             return {
-                query: createInsertStatement(table),
+                query: createInsertStatement(table, opts),
                 params: createArgsFromData(data)
             };
         }));

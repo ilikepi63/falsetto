@@ -30,6 +30,14 @@ describe("Insert Into Test Suite", () => {
         expect(createInsertStatement(queryByfirstNameLastName)).toBe("INSERT INTO person_by_first_name_last_name (id, first_name, last_name, email) VALUES (?, ?, ?, ?);");
     });
 
+
+    it("Should return a complete insert into query with a cas operation", () => {
+
+        expect(createInsertStatement(queryByEmail, { ifNotExists: true })).toBe("INSERT INTO person_by_email (id, first_name, last_name, email) VALUES (?, ?, ?, ?) IF NOT EXISTS;");
+
+        expect(createInsertStatement(queryByfirstNameLastName, { ifNotExists: true })).toBe("INSERT INTO person_by_first_name_last_name (id, first_name, last_name, email) VALUES (?, ?, ?, ?) IF NOT EXISTS;");
+    });
+
     it("should return a valid list of attribute names", () => {
         expect(createColumnList(queryByEmail)).toBe("(id, first_name, last_name, email)");
     });
