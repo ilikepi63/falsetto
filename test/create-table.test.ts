@@ -57,7 +57,7 @@ describe("Testing Create Table", () => {
     it("Should correctly create the clustering order", () => {
         const column1 = new ClusteringColumn({ direction: ClusteringDirection.asc, name: "added_date" });
         const column2 = new ClusteringColumn({ direction: ClusteringDirection.desc, name: "name" });
-        expect(createClusteringOrder([column1, column2],)).toBe("WITH CLUSTERING ORDER BY (added_date asc name desc)");
+        expect(createClusteringOrder([column1, column2],)).toBe("WITH CLUSTERING ORDER BY (added_date asc, name desc)");
     });
 
 

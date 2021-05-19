@@ -32,4 +32,4 @@ export const createPartitionKey = (keys: Array<string>): string => parenthesis(k
 
 export const createClusteringColumn = (clusteringColumn: ClusteringColumn): string => `${clusteringColumn.name} ${clusteringColumn.direction}`;
 
-export const createClusteringOrder = (clusteringKeys: Array<ClusteringColumn>): string => clusteringKeys.length > 0 ? `${WITH_CLUSTERING_ORDER_BY} ${parenthesis(clusteringKeys.map(col => createClusteringColumn(col)).join(" "))}` : "";
+export const createClusteringOrder = (clusteringKeys: Array<ClusteringColumn>): string => clusteringKeys.length > 0 ? `${WITH_CLUSTERING_ORDER_BY} ${parenthesis(clusteringKeys.map(col => createClusteringColumn(col)).join(", "))}` : "";
