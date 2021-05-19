@@ -22,4 +22,9 @@ describe("Table Test Suite", () => {
         const executable = queryByEmail.createTable();
         expect(executable).toBe("CREATE TABLE person_by_email (\nid uuid,\nfirst_name text,\nlast_name text,\nemail text,\nPRIMARY KEY ((email))\n) ;");
     });
+
+    it("should give me the correct table name", () => {
+        expect(queryByEmail.getGeneratedName()).toBe("person_by_email");
+    });
+
 });

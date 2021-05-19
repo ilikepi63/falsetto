@@ -4,6 +4,7 @@ import ClusteringColumn from "./clustering-column";
 import { createTable } from "./cql-generators/create-table";
 import { isAttribute } from "./attributes/base-attribute";
 import Query from "./query";
+import { createNameFromQuery } from "./cql-generators/utils";
 
 export default class Table {
 
@@ -25,6 +26,10 @@ export default class Table {
 
         // return the instance of this query
         return query;
+    }
+
+    getGeneratedName() {
+        return createNameFromQuery(this);
     }
 
     by(attr: Attribute | Array<Attribute>): Table {
