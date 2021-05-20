@@ -1,8 +1,9 @@
 import Executable from "./executables/executable";
 import { Client, types } from "cassandra-driver";
-import { generateSelectQuery, IConstraint } from "./cql-generators/select";
+import { generateSelectQuery } from "./cql-generators/select";
 import { Schema, Table } from ".";
 import { getTableFromSchema } from "./schema-utils";
+import { IConstraint } from "./cql-generators/utils";
 
 interface IQueryConstructor {
     table?: Table,
