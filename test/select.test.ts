@@ -1,5 +1,6 @@
 import { Schema, Table, TextAttribute, UuidAttribute } from "../src";
-import { generateSelectQuery, generateAttributes, stringFromAttributes, whereStatement } from "../src/cql-generators/select";
+import { generateSelectQuery, generateAttributes, stringFromAttributes } from "../src/cql-generators/select";
+import { whereStatement } from "../src/cql-generators/utils";
 
 
 describe("Select Table Generator", () => {
@@ -104,11 +105,9 @@ describe("Select Table Generator", () => {
 
     it("Should throw.", () => {
 
-
         expect(() => {
             const { query, params } = whereStatement([{ subject: "", value: null }]);
         }).toThrow();
-
 
     });
 
