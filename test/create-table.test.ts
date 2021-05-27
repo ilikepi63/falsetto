@@ -1,4 +1,7 @@
 import { Schema, TextAttribute, UuidAttribute, Table } from "../src";
+import ListAttribute from "../src/attributes/collection/list-attribute";
+import MapAttribute from "../src/attributes/collection/map-attribute";
+import SetAttribute from "../src/attributes/collection/set-attribute";
 import ClusteringColumn, { ClusteringDirection } from "../src/clustering-column";
 import { createClusteringKey, createPartitionKey, createPrimaryKey, createTable, createClusteringOrder, createClusteringColumn, typeFromAttributeEntry, attributesFromQuery } from "../src/cql-generators/create-table";
 import { createNameFromQuery, parenthesis } from "../src/cql-generators/utils";
@@ -67,6 +70,33 @@ describe("Testing Create Table", () => {
 
     it("Should create a table definition correctly", () => {
         expect(createTable(queryByfirstNameLastName)).toBe("CREATE TABLE person_by_first_name_last_name (\nid uuid,\nfirst_name text,\nlast_name text,\nemail text,\nPRIMARY KEY ((first_name, last_name), email)\n) WITH CLUSTERING ORDER BY (email asc);");
+    });
+
+    // collections test
+    const personIdCollection = new UuidAttribute("id");
+    const firstNameCollection = new TextAttribute("first_name");
+    const lastNameCollection = new TextAttribute("last_name");
+    const emailCollection = new SetAttribute("email", new TextAttribute("email"));
+
+
+    const personSchemaCollection = new Schema("person", {
+        id: personIdCollection,
+        firstName: firstNameCollection,
+        lastName: lastNameCollection,
+        email: emailCollection,
+        attributes: new MapAttribute("attributes", { keyType: new TextAttribute("key"), valueType: new TextAttribute("value") }),
+        interests: new ListAttribute("interests", new TextAttribute("attribute"))
+    });
+
+    const queryByEmailCollection = Table.from(personSchemaCollection)
+        .by(email);
+
+    it("should return a correct create statement for sets", () => {
+
+        const select = createTable(queryByEmailCollection);
+
+        expect(select).toBe("CREATE TABLE person_by_email (\nid uuid,\nfirst_name text,\nlast_name text,\nemail set<text>,\nattributes map<text, text>,\ninterests list<text>,\nPRIMARY KEY ((email))\n) ;");
+
     });
 
 });

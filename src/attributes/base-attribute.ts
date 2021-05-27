@@ -1,10 +1,12 @@
 import { CassandraType } from "../data-types";
 
-export default interface Attribute {
+interface Attribute {
     name: string;
-    type: CassandraType;
+    type: string;
 };
 
 export function isAttribute(object: any): object is Attribute {
     return true;
 };
+
+export default Attribute;
