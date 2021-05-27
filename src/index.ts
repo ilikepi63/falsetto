@@ -25,6 +25,9 @@ import {
 import Schema from "./schema";
 import Table from "./table";
 import Query from "./query";
+import SetAttribute from "./attributes/collection/set-attribute";
+import ListAttribute from "./attributes/collection/list-attribute";
+import MapAttribute from "./attributes/collection/map-attribute";
 export {
     TextAttribute,
     UuidAttribute,
@@ -47,6 +50,9 @@ export {
     TinyintAttribute,
     VarcharAttribute,
     VarintAttribute,
+    SetAttribute,
+    ListAttribute,
+    MapAttribute,
     Schema,
     Table,
     Query,
