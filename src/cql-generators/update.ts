@@ -24,17 +24,17 @@ export interface UpdateStatementOptions {
     ifNotExists?: boolean,
     ifExists?: boolean,
     conditions?: Array<IConstraint>,
-    timestampValue?: string,
-    timeValue?: string,
+    timestampValue?: number,
+    timeValue?: number,
 }
 
 const withUsing = (string: string) => ` ${USING} ${string}`;
 
-export const timeStampOrTimeValue = ({ timestampValue, timeValue }: { timestampValue?: string, timeValue?: string }): string => {
+export const timeStampOrTimeValue = ({ timestampValue, timeValue }: { timestampValue?: number, timeValue?: number }): string => {
 
-    if (timestampValue) return withUsing(`${TIMESTAMP} ${timestampValue}`);
+    if (typeof timestampValue === "number") return withUsing(`${TIMESTAMP} ${timestampValue}`);
 
-    if (timeValue) return withUsing(`${TTL} ${timeValue}`);
+    if (typeof timestampValue === "number") return withUsing(`${TTL} ${timeValue}`);
 
     return "";
 };

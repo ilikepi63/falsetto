@@ -7,6 +7,7 @@ import { createInsertStatement, InsertStatementOptions } from "./cql-generators/
 import BatchExecutable from "./executables/batch-executable";
 import Executable from "./executables/executable";
 import Query from "./query";
+import Update from "./update";
 
 
 export default class Schema {
@@ -35,6 +36,10 @@ export default class Schema {
 
         return new MultiExecutable(executables);
     }
+
+    update(): Update {
+        return new Update({ schema: this });
+    };
 
     get(attributes?: Array<string>): Query {
         return new Query({ schema: this, attributes });

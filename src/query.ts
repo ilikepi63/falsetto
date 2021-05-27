@@ -4,6 +4,7 @@ import { generateSelectQuery } from "./cql-generators/select";
 import { Schema, Table } from ".";
 import { getTableFromSchema } from "./schema-utils";
 import { IConstraint } from "./cql-generators/utils";
+import { Where } from "./where";
 
 interface IQueryConstructor {
     table?: Table,
@@ -26,11 +27,11 @@ export default class Query implements Executable {
         this.attributes = attributes;
     }
 
-    where(attribute: string): Where {
+    where(attribute: string): Where<Query> {
         return new Where(this, attribute);
     };
 
-    and(attribute: string): Where {
+    and(attribute: string): Where<Query> {
         return new Where(this, attribute);
     };
 
@@ -61,46 +62,3 @@ export default class Query implements Executable {
 }
 
 export const getEqualConstraints = (constraints: Array<IConstraint>): Array<IConstraint> => constraints.filter(constraint => constraint.operator === Where.EQUALS);
-
-export class Where {
-
-    static EQUALS: string = "=";
-    static IS_GREATER_THAN: string = ">";
-    static IS_GREATER_THAN_OR_EQUAL_TO: string = ">=";
-    static IS_LESSER_THAN: string = "<";
-    static IS_LESSER_THAN_OR_EQUAL_TO: string = "<=";
-
-    query: Query;
-    attribute: string;
-
-    constructor(query: Query, attribute: string) {
-        this.query = query;
-        this.attribute = attribute;
-    }
-
-    equals(value: unknown): Query {
-        this.query.addConstraint({ subject: this.attribute, operator: Where.EQUALS, value: value });
-        return this.query;
-    }
-
-    isGreaterThan(value: unknown): Query {
-        this.query.addConstraint({ subject: this.attribute, operator: Where.IS_GREATER_THAN, value: value });
-        return this.query;
-    }
-
-    isGreaterThanOrEqualTo(value: unknown) {
-        this.query.addConstraint({ subject: this.attribute, operator: Where.IS_GREATER_THAN_OR_EQUAL_TO, value: value });
-        return this.query;
-    }
-
-    isLesserThan(value: unknown) {
-        this.query.addConstraint({ subject: this.attribute, operator: Where.IS_LESSER_THAN, value: value });
-        return this.query;
-    }
-
-    isLesserThanOrEqualTo(value: unknown) {
-        this.query.addConstraint({ subject: this.attribute, operator: Where.IS_LESSER_THAN_OR_EQUAL_TO, value: value });
-        return this.query;
-    }
-
-}

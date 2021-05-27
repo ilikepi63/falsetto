@@ -5,6 +5,7 @@ import { createTable } from "./cql-generators/create-table";
 import { isAttribute } from "./attributes/base-attribute";
 import Query from "./query";
 import { createNameFromQuery } from "./cql-generators/utils";
+import Update from "./update";
 
 export default class Table {
 
@@ -54,6 +55,10 @@ export default class Table {
         return this;
 
     }
+
+    update(): Update {
+        return new Update({ table: this });
+    };
 
     createTable(): string {
         return createTable(this);
